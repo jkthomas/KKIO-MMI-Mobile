@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+    <script src="https://unpkg.com/react@15/dist/react.js"></script>
+    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
+</head>
+<body>
+<noscript>
+    You need to enable JavaScript to run this app.
+</noscript>
+<div id="root">Test</div>
+
+<script>
+    "use strict";
+    const MessageProvider = function (props) {
+        return (
+            React.createElement('div', {className: 'Message'}, props.message)
+        )
+    };
+
+    class RadioReply extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                pickedOptionId: this.props.replies[0].id.toString(),
+                pickedOptionContent: this.props.replies[0].content.toString()
+            };
+
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(event, replyContent) {
+            let checkedOption = event.target;
+            if (checkedOption.checked) {
+                this.setState({
+                    pickedOptionId: checkedOption.value,
+                    pickedOptionContent: replyContent
+                })
+            }
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            //TODO: Logging for testing purposes only
+            //console.log(this.state.pickedOptionId.toString());
+            //
+            const answer = {
+                questionId: this.props.questionId,
+                replyId: parseInt(this.state.pickedOptionId),
+                replyContent: this.state.pickedOptionContent.toString()
+            };
+            this.props.handleRadioAnswerSubmit(answer);
+        }
+
+        render() {
+            const currentlyPickedOption = this.state.pickedOptionId;
+            const replies = this.props.replies.map(function (reply) {
+                return ([
+                    React.createElement('input',
+                        {
+                            key: reply.id, type: 'radio', value: reply.id,
+                            checked: currentlyPickedOption === reply.id.toString(),
+                            onChange: function (event) {
+                                this.handleChange(event, reply.content)
+                            }
+                        }),
+                    React.createElement('label', null, reply.content),
+                    React.createElement('br', {key: 'breakline'})
+                ])
+            });
+            return (
+                React.createElement('form', {key: 'form', onSubmit: this.handleSubmit},
+                    replies,
+                    React.createElement('input', {key: 'submit', type: 'submit'})
+                ))
+        }
+    }
+
+    class CheckboxReply extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                checkedOptionsIds: [],
+                checkedOptionsContent: []
+            };
+
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(event, replyContent) {
+            let checkedOption = event.target;
+            if (checkedOption.checked) {
+                this.setState({
+                    checkedOptionsIds: this.state.checkedOptionsIds.concat([parseInt(checkedOption.value)]),
+                    checkedOptionsContent: this.state.checkedOptionsContent.concat([replyContent])
+                })
+            } else {
+                this.setState({
+                    checkedOptionsIds: this.state.checkedOptionsIds.filter(function(x, value) {return value === checkedOption.value}),
+                    checkedOptionsContent: this.state.checkedOptionsContent.filter(function(x, content) {return content === replyContent})
+                })
+            }
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            //TODO: Logging for testing purposes only
+            //console.log(this.state.checkedOptionsIds.toString());
+            //
+            const answers = [];
+            for (let i = 0; i < this.state.checkedOptionsIds.length; i++) {
+                answers.push({
+                    questionId: this.props.questionId,
+                    replyId: this.state.checkedOptionsIds[i],
+                    replyContent: this.state.checkedOptionsContent[i].toString()
+                })
+            }
+
+            this.props.handleCheckboxAnswersSubmit(answers);
+        }
+
+        render() {
+            const replies = this.props.replies.map(function (reply) {
+                return ([
+                    React.createElement('input',
+                        {
+                            key: reply.id, type: 'checkbox', value: reply.id,
+                            onChange: function (event) {
+                                this.handleChange(event, reply.content)
+                            }
+                        }),
+                    React.createElement('label', null, reply.content),
+                    React.createElement('br', {key: 'breakline'})
+                ])
+            });
+            return (
+                React.createElement('form', {key: 'form', onSubmit: this.handleSubmit},
+                    replies,
+                    React.createElement('input', {key: 'submit', type: 'submit'})
+                ))
+        }
+    }
+
+    class OpenReply extends React.Component {
+        constructor(props) {
+            super(props);
+
+            this.state = {
+                answer: ''
+            };
+
+            this.handleChange = this.handleChange.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+        }
+
+        handleChange(event) {
+            this.setState({
+                answer: event.target.value
+            });
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            //TODO: Logging for testing purposes only
+            //console.log(this.state.answer.toString());
+            //
+            const answer = {
+                questionId: this.props.questionId,
+                replyId: 7, // replyId that matches database id in replies table
+                replyContent: this.state.answer.toString()
+            };
+            this.props.handleOpenAnswerSubmit(answer);
+        }
+
+        render() {
+            return (
+                React.createElement('form', {
+                        key: 'form',
+                        onSubmit: this.handleSubmit,
+                        onChange: (function(event) {this.handleChange(event)})
+                    },
+                    React.createElement('input', {type: 'text'}),
+                    React.createElement('input', {type: 'submit'})
+                ))
+        }
+    }
+
+    class QuestionManager extends React.Component {
+        // noinspection JSMethodCanBeStatic
+        getRepliesComponent(inputType) {
+            switch (inputType) {
+                case 1:
+                    return (
+                        React.createElement(RadioReply, {
+                            key: this.props.question.id,
+                            replies: this.props.question.replies,
+                            questionId: this.props.question.id,
+                            handleRadioAnswerSubmit: this.props.handleRadioAnswerSubmit
+                        })
+                    );
+                case 2:
+                    return (
+                        React.createElement(RadioReply, {
+                            key: this.props.question.id,
+                            replies: this.props.question.replies,
+                            questionId: this.props.question.id,
+                            handleRadioAnswerSubmit: this.props.handleRadioAnswerSubmit
+                        })
+                    );
+                case 3:
+                    return (
+                        React.createElement(OpenReply, {
+                            key: this.props.question.id,
+                            questionId: this.props.question.id,
+                            handleOpenAnswerSubmit: this.props.handleOpenAnswerSubmit
+                        })
+                    );
+                case 4:
+                    return (
+                        React.createElement(CheckboxReply, {
+                            key: this.props.question.id,
+                            replies: this.props.question.replies,
+                            questionId: this.props.question.id,
+                            handleCheckboxAnswersSubmit: this.props.handleCheckboxAnswersSubmit
+                        })
+                    );
+                default:
+                    return (
+                        React.createElement(MessageProvider, {
+                            key: 'msgProvider',
+                            message: "Nie udalo sie wczytac mozliwych odpowiedzi"
+                        })
+                    );
+            }
+        }
+
+        render() {
+            const repliesComponent = this.getRepliesComponent(this.props.question.type);
+            return (
+                React.createElement('div', null, this.props.question.content, repliesComponent)
+            )
+        }
+    }
+
+    class SurveyManager extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                questions: null,
+                currentQuestion: null,
+                questionsLength: null,
+                answers: []
+            };
+
+            fetch("https://x:x/x/x")
+                .then(function (response) {
+                    response.json()
+                })
+                .then(function (response) {
+                    this.setState({
+                        questions: response,
+                        currentQuestion: 0
+                    })
+                }.bind(this))
+                .catch(function(error) {console.log(error)});
+
+            this.handleCheckboxAnswersSubmit = this.handleCheckboxAnswersSubmit.bind(this);
+            this.handleRadioAnswerSubmit = this.handleRadioAnswerSubmit.bind(this);
+            this.handleOpenAnswerSubmit = this.handleOpenAnswerSubmit.bind(this);
+            this.incrementCurrentQuestion = this.incrementCurrentQuestion.bind(this);
+            this.saveAnswers = this.saveAnswers.bind(this);
+        }
+
+        handleCheckboxAnswersSubmit(answers) {
+            answers.forEach(function(answer){
+                this.setState({
+                        answers: this.state.answers.concat([answer])
+                    }
+                );
+            });
+
+            this.incrementCurrentQuestion();
+        }
+
+        handleRadioAnswerSubmit(answer) {
+            this.setState({
+                    answers: this.state.answers.concat([answer])
+                }
+            );
+            this.incrementCurrentQuestion();
+        }
+
+        handleOpenAnswerSubmit(answer) {
+            this.setState({
+                    answers: this.state.answers.concat([answer])
+                }
+            );
+            this.incrementCurrentQuestion();
+        }
+
+        incrementCurrentQuestion() {
+            this.setState({
+                    currentQuestion: this.state.currentQuestion + 1
+                }
+            );
+        }
+
+        saveAnswers() {
+            console.log("Starting POST>:...");
+            fetch("https://x:x/x/x", {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(this.state.answers)
+            });
+            console.log("ENDING POST>:...");
+
+            this.props.handleSurveySubmit();
+        }
+
+        render() {
+            if (this.state.questions == null) {
+                return (
+                    React.createElement(MessageProvider, {
+                        key: 'msgProvider',
+                        message: "Wczytywanie"
+                    })
+                )
+            }
+
+            if (this.state.questions[this.state.currentQuestion] === undefined) {
+                if (this.state.currentQuestion !== 0) {
+                    return (
+                        React.createElement('button', {
+                            key: 'saveButton',
+                            onClick: this.saveAnswers
+                        }, "Odpowiedziano na wszystkie pytania. Potwierdz swoje odpowiedzi klikając tutaj")
+                    )
+                } else {
+                    return (
+                        React.createElement(MessageProvider, {
+                            key: 'msgProvider',
+                            message: "Blad ogolny, prosze zrestartowac aplikacje"
+                        })
+                    )
+                }
+            }
+
+            return (
+                React.createElement(QuestionManager,
+                    {
+                        key: 'questionManager',
+                        question: this.state.questions[this.state.currentQuestion],
+                        handleCheckboxAnswersSubmit: this.handleCheckboxAnswersSubmit,
+                        handleRadioAnswerSubmit: this.handleRadioAnswerSubmit,
+                        handleOpenAnswerSubmit: this.handleOpenAnswerSubmit
+                    })
+            );
+        }
+    }
+
+    class App extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                surveySubmitted: false
+            };
+            this.handleSurveySubmit = this.handleSurveySubmit.bind(this);
+        }
+
+        handleSurveySubmit() {
+            this.setState({
+                surveySubmitted: true
+            });
+        }
+
+        render() {
+            if (this.state.surveySubmitted) {
+                return (
+                    React.createElement('div', null, "Thank you for submitting answers for our survey!")
+                )
+            } else {
+                return (
+                    React.createElement('div', null,
+                        React.createElement(SurveyManager, {handleSurveySubmit: this.handleSurveySubmit}))
+                );
+            }
+        }
+    }
+
+    ReactDOM.render(
+        React.createElement(App, null), document.getElementById('root')
+    );
+
+</script>
+</body>
+</html>

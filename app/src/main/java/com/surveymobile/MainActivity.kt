@@ -7,48 +7,45 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.webkit.WebSettings
+import khttp.get
 import android.webkit.WebView
 import android.widget.TextView
 
 
 class MainActivity : AppCompatActivity() {
-    var mywebview: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setPermissions()
-        setWebView()
     }
 
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun setWebView() {
-        mywebview = findViewById<WebView>(R.id.webview)
-        /*mywebview!!.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                view?.loadUrl(url)
-                return true
+    private fun setStatsView() {
+        val statsTextView = findViewById<TextView>(R.id.jsonTextView)
+        Thread{
+            val jsonResponse = get("")
+
+            runOnUiThread{
+                statsTextView.text = jsonResponse.text
             }
-        }*/
-        val mywebviewSettings = mywebview
-        if (mywebviewSettings is WebView) {
-            mywebviewSettings.settings.javaScriptEnabled = true
-            mywebviewSettings.settings.domStorageEnabled = true
-        }
-        mywebview!!.loadUrl("file:///android_asset/index.html")
+        }.start()
     }
 
     private fun setPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                         Manifest.permission.INTERNET)
                 != PackageManager.PERMISSION_GRANTED) {
-            //tv1.text = getString(R.string.textview1_permission_denied)
+            //permission is not granted - request permisions
             ActivityCompat.requestPermissions(this,
                     arrayOf(Manifest.permission.INTERNET), 1)
+            /* IF STILL NOT GRANTED -> longToast("Permission not granted. Shutting down.")
+                finish() */
         } else {
-            //tv1.text = getString(R.string.textview1_permission_granted)
+            //permission granted already - show content
+            setStatsView()
         }
     }
 }

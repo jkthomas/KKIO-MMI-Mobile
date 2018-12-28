@@ -2,4 +2,9 @@
     <string name="app_name">Surveymobile</string>
     <string name="textview1_permission_granted">Permission granted</string>
     <string name="textview1_permission_denied">Permission denied</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Loading…</string>
+    <string name="testString">testString</string>
+    <string name="show_statistics">Show statistics</string>
 </resources>

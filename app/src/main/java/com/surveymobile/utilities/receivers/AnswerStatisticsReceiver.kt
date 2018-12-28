@@ -16,7 +16,6 @@ class AnswerStatisticsReceiver{
         Thread {
             try {
                 val jsonResponse: Response = get("")
-
                 val statisticsData: JSONArray = jsonResponse.jsonArray
 
                 for (i in 0 until statisticsData.length()) {

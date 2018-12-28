@@ -7,4 +7,5 @@
     <string name="hello_blank_fragment">Loading…</string>
     <string name="testString">testString</string>
     <string name="show_statistics">Show statistics</string>
+    <string name="loading">Wczytywanie...</string>
 </resources>

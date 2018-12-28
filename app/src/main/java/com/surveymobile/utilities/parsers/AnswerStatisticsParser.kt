@@ -11,7 +11,7 @@ class AnswerStatisticsParser {
             try {
                 questions.forEach{ question ->
                     statisticsString += questionCounter
-                    statisticsString += ": "
+                    statisticsString += ") "
                     statisticsString += question.questionContent
                     statisticsString += "\n"
                     question.answerStatistics.forEach{  answer ->

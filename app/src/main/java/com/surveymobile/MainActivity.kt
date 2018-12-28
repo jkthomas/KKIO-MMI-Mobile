@@ -42,13 +42,10 @@ class MainActivity : AppCompatActivity(), StatisticsFragment.OnFragmentInteracti
     }
 
     private fun setPermissions() {
-        if (ContextCompat.checkSelfPermission(this,
-                        Manifest.permission.INTERNET)
-                != PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             //permission is not granted - request permisions
-            ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.INTERNET), 1)
-            /* IF STILL NOT GRANTED -> longToast("Permission not granted. Shutting down.")
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET), 1)
+            /* IF STILL NOT GRANTED -> longToast("Permission not granted. Shutting down...")
                 finish() */
         } else {
             //permission granted already - show content

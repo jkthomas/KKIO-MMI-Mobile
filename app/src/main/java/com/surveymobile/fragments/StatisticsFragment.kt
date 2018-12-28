@@ -14,6 +14,8 @@ import android.widget.TextView
 import com.surveymobile.R
 import com.surveymobile.entity.survey.AnswerStatisticsEntity
 import com.surveymobile.entity.survey.QuestionStatisticEntity
+import com.surveymobile.utilities.parsers.AnswerStatisticsParser
+import com.surveymobile.utilities.receivers.AnswerStatisticsReceiver
 import khttp.get
 import khttp.responses.Response
 import kotlinx.android.synthetic.main.fragment_statistics.*
@@ -39,9 +41,8 @@ class StatisticsFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
-    private var counter: Int = 1
     private var viewOfFragment: View? = null
-    private val questions: MutableList<QuestionStatisticEntity> = mutableListOf()
+    private val answerStatisticsReceiver = AnswerStatisticsReceiver()
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,37 +60,19 @@ class StatisticsFragment : Fragment() {
         // Inflate the layout for this fragment
         viewOfFragment = inflater.inflate(R.layout.fragment_statistics, container, false)
         viewOfFragment?.tempButton?.setOnClickListener {
-            if (this.counter == 1) {
-                viewOfFragment?.statisticsTextView?.text = getString(R.string.testString)
-                this.counter = 0
+            val statistics: String = AnswerStatisticsParser.parseAnswerStatistics(this.answerStatisticsReceiver.getStatisticData())
+            if (statistics == "") {
+                viewOfFragment?.statisticsTextView?.text = getString(R.string.loading)
             } else {
-                viewOfFragment?.statisticsTextView?.text = questions.first().answerStatistics.first().toString()
-                this.counter = 1
+                viewOfFragment?.statisticsTextView?.text = statistics
             }
-            //questions.first().answerStatistics.first().answerContent
         }
 
         return viewOfFragment
     }
 
     fun createStatistics() {
-        Thread {
-            val jsonResponse: Response = get("")
-
-            val statisticsData: JSONArray = jsonResponse.jsonArray
-
-            for (i in 0 until statisticsData.length()) {
-                var questionEntity: QuestionStatisticEntity?
-                val statisticSingleData = statisticsData.getJSONObject(i)
-                questionEntity = QuestionStatisticEntity(statisticSingleData["questionContent"].toString())
-                val answerStatData: JSONObject = statisticSingleData["answerStatistics"] as JSONObject
-                for (key in answerStatData.keys()) {
-                    questionEntity.answerStatistics.add(AnswerStatisticsEntity(key as String, answerStatData[key] as Int))
-                }
-
-                questions.add(questionEntity)
-            }
-        }.start()
+        this.answerStatisticsReceiver.getServerStatisticData()
     }
 
     // TODO: Rename method, update argument and hook method into UI event

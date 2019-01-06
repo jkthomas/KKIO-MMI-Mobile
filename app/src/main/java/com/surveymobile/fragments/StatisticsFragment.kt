@@ -22,6 +22,7 @@ class StatisticsFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setStatistics()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -29,25 +30,22 @@ class StatisticsFragment : Fragment() {
         // Inflate the layout for this fragment
         viewOfFragment = inflater.inflate(R.layout.fragment_statistics, container, false)
         viewOfFragment?.showStatsButton?.setOnClickListener {
-            setStatistics()
             val statistics: String = AnswerStatisticsParser.parseAnswerStatistics(this.answerStatisticsReceiver.fillStatisticData())
             if (statistics == "") {
                 viewOfFragment?.statisticsTextView?.text = getString(R.string.loading)
             } else {
                 viewOfFragment?.statisticsTextView?.text = statistics
-                viewOfFragment?.showStatsButton?.text = getString(R.string.update_statistics)
             }
         }
 
         viewOfFragment?.hideStatsButton?.setOnClickListener {
             viewOfFragment?.statisticsTextView?.text = ""
-            viewOfFragment?.showStatsButton?.text = getString(R.string.show_statistics)
         }
 
         return viewOfFragment
     }
 
-    fun setStatistics() {
+    private fun setStatistics() {
         this.answerStatisticsReceiver.getStatisticData()
     }
 

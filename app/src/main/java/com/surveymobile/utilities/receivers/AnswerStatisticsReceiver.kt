@@ -12,7 +12,6 @@ import java.lang.Exception
 
 class AnswerStatisticsReceiver : AnswerStatisticsReceiverInterface {
     private val questions: MutableList<QuestionStatisticEntity> = mutableListOf()
-    private val currentQuestions: MutableList<QuestionStatisticEntity> = mutableListOf()
 
     override fun getStatisticData(){
         Thread {
@@ -38,11 +37,6 @@ class AnswerStatisticsReceiver : AnswerStatisticsReceiverInterface {
     }
 
     override fun fillStatisticData() : MutableList<QuestionStatisticEntity> {
-        if(!this.questions.isEmpty()){
-            this.currentQuestions.clear()
-            this.currentQuestions.addAll(this.questions)
-            this.questions.clear()
-        }
-        return this.currentQuestions
+        return this.questions
     }
 }

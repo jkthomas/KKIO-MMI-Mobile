@@ -3,16 +3,18 @@ package com.surveymobile.utilities.receivers
 import android.util.Log
 import com.surveymobile.entity.survey.AnswerStatisticsEntity
 import com.surveymobile.entity.survey.QuestionStatisticEntity
+import com.surveymobile.utilities.receivers.receiversInterface.AnswerStatisticsReceiverInterface
 import khttp.get
 import khttp.responses.Response
 import org.json.JSONArray
 import org.json.JSONObject
 import java.lang.Exception
 
-class AnswerStatisticsReceiver{
+class AnswerStatisticsReceiver : AnswerStatisticsReceiverInterface {
     private val questions: MutableList<QuestionStatisticEntity> = mutableListOf()
+    private val currentQuestions: MutableList<QuestionStatisticEntity> = mutableListOf()
 
-    fun getServerStatisticData(){
+    override fun getStatisticData(){
         Thread {
             try {
                 val jsonResponse: Response = get("")
@@ -35,7 +37,12 @@ class AnswerStatisticsReceiver{
         }.start()
     }
 
-    fun getStatisticData() : MutableList<QuestionStatisticEntity> {
-        return this.questions
+    override fun fillStatisticData() : MutableList<QuestionStatisticEntity> {
+        if(!this.questions.isEmpty()){
+            this.currentQuestions.clear()
+            this.currentQuestions.addAll(this.questions)
+            this.questions.clear()
+        }
+        return this.currentQuestions
     }
 }

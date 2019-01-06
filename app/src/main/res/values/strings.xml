@@ -1,11 +1,10 @@
 <resources>
     <string name="app_name">Surveymobile</string>
-    <string name="textview1_permission_granted">Permission granted</string>
-    <string name="textview1_permission_denied">Permission denied</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Loading…</string>
+    <string name="textview1_permission_granted">Udzielono pozwolenia</string>
+    <string name="textview1_permission_denied">Pozwolenie odrzucone</string>
     <string name="testString">testString</string>
-    <string name="show_statistics">Show statistics</string>
-    <string name="loading">Wczytywanie...</string>
+    <string name="show_statistics">Pokaz statystyki</string>
+    <string name="update_statistics">Aktualizuj statystyki</string>
+    <string name="loading">Wczytywanie…ponow probe za kilka sekund</string>
+    <string name="hide_statistics">Ukryj statystyki</string>
 </resources>

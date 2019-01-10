@@ -1,0 +1,103 @@
+html{
+    height: 100%;
+    font-family: 'Montserrat', sans-serif;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background: #fff;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+#root{
+    height: 100%;
+}
+
+.mainContainer{
+    display: block;
+    width:50%;
+    margin:auto;
+
+}
+
+.questionContainer{
+    background-color: #8585ad;
+    padding: 50px;
+}
+
+.questionContent{
+    text-align: center;
+    font-weight: bold;
+    font-size: 200%;
+}
+
+.flexForm{
+    width:50%;
+    margin:50px auto;
+    padding:50px;
+    border:1px solid #bfbfbf;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: nowrap;
+    animation: fadein 2s;
+}
+
+.flexFormContainer{
+    width: 100%;
+    margin: 10px 0;
+}
+.flexForm label {
+    margin-bottom:10px;
+}
+
+.pickInput{
+
+}
+
+.pickInput:checked{
+    animation: swell 250ms ease-in;
+}
+
+
+.inputLabel{
+    font-size: 1.5em;
+}
+
+.textInput{
+    height: 50px;
+    width: 90%;
+    margin-bottom:30px;
+    border: 1px solid #bfbfbf;
+}
+
+.submitButton{
+    /*width: 30%;*/
+    margin: 0;
+    padding: 20px;
+    background:#8585AD;
+    color:#fff;
+    font-weight:bold;
+    font-size: 18px;
+    border:0;
+}
+
+.message{
+    font-size: 200%;
+    text-shadow: 2px 2px pink;
+}
+
+@keyframes swell{
+    0%{transform: scale(0);}
+    25%{transform: scale(1.5);}
+    75%{transform: scale(1.7);}
+    100%{transform: scale(1);}
+}
+
+@keyframes fadein {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}

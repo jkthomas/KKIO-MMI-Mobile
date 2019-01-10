@@ -1,7 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="theme-color" content="#000000">
+    <!--
+      manifest.json provides metadata used when your web app is added to the
+      homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link href="stylesheet.css" rel="stylesheet" type="text/css">
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -11,50 +18,66 @@
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
+    <script src="https://unpkg.com/react@16/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
     <title>React App</title>
-    <script src="https://unpkg.com/react@15/dist/react.js"></script>
-    <script src="https://unpkg.com/react-dom@15/dist/react-dom.js"></script>
 </head>
 <body>
 <noscript>
     You need to enable JavaScript to run this app.
 </noscript>
-<div id="root">Test</div>
+<div id="root"></div>
 
-<script>
-    "use strict";
-    const MessageProvider = function (props) {
-        return (
-            React.createElement('div', {className: 'Message'}, props.message)
-        )
+<script type="text/babel">
+    'use strict';
+    const MessageEnum = {
+        Loading: "Wczytywanie...",
+        End: "Odpowiedziano na wszystkie pytania. Potwierdz swoje odpowiedzi klikając w przycisk poniżej...",
+        ReplyLoadingError: "Nie udalo sie wczytac mozliwych odpowiedzi. Prosze odswiezyc strone.",
+        GeneralError: "Blad ogolny, prosze zrestartowac aplikacje.",
+        SubmitThanks: "Dziekujemy za wypelnienie naszej ankiety!"
     };
 
-
-
-    let CheckboxReply = React.createClass({
-        getInitialState: function(){
-            return{
+    const MessageProvider = (props) => {
+        return (
+            <div className="message">
+                <p>{props.message}</p>
+            </div>
+        )
+    };
+    class CheckboxReply extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
                 checkedOptionsIds: [],
                 checkedOptionsContent: []
-            }
-        },
+            };
 
-        handleChange: function(event, replyContent) {
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(event, replyContent) {
             let checkedOption = event.target;
             if (checkedOption.checked) {
-                this.setState({
-                    checkedOptionsIds: this.state.checkedOptionsIds.concat([parseInt(checkedOption.value)]),
-                    checkedOptionsContent: this.state.checkedOptionsContent.concat([replyContent])
-                })
+                this.setState(
+                    prevState => ({
+                        checkedOptionsIds: [...prevState.checkedOptionsIds, parseInt(checkedOption.value)],
+                        checkedOptionsContent: [...prevState.checkedOptionsContent, replyContent]
+                    })
+                )
             } else {
-                this.setState({
-                    checkedOptionsIds: this.state.checkedOptionsIds.filter(function(x, value) {return value === checkedOption.value}),
-                    checkedOptionsContent: this.state.checkedOptionsContent.filter(function(x, content) {return content === replyContent})
-                })
+                this.setState(
+                    prevState => ({
+                        checkedOptionsIds: prevState.checkedOptionsIds.filter((x, value) => value === checkedOption.value),
+                        checkedOptionsContent: prevState.checkedOptionsContent.filter((x, content) => content === replyContent)
+                    })
+                )
             }
-        },
+        }
 
-        handleSubmit: function(event) {
+        handleSubmit(event) {
             event.preventDefault();
             //TODO: Logging for testing purposes only
             //console.log(this.state.checkedOptionsIds.toString());
@@ -69,46 +92,77 @@
             }
 
             this.props.handleCheckboxAnswersSubmit(answers);
-        },
+        }
 
-        render: function() {
-            const replies = this.props.replies.map(function (reply) {
+        render() {
+            const replies = this.props.replies.map((reply) => {
                 return ([
-                    React.createElement('input',
-                        {
-                            key: reply.id, type: 'checkbox', value: reply.id,
-                            onChange: function (event) {
-                                this.handleChange(event, reply.content)
-                            }
-                        }),
-                    React.createElement('label', null, reply.content),
-                    React.createElement('br', {key: 'breakline'})
+                    <div className="flexFormContainer">
+                        <input className="pickInput" key={reply.id} type="checkbox" value={reply.id}
+                               onChange={event => this.handleChange(event, reply.content)}/>
+                        <label className="inputLabel" key='content'>{reply.content}</label>
+                    </div>,
+                    <br key='breakline'/>
                 ])
             });
             return (
-                React.createElement('form', {key: 'form', onSubmit: this.handleSubmit},
-                    replies,
-                    React.createElement('input', {key: 'submit', type: 'submit'})
-                ))
+                <form className="flexForm" key='form' onSubmit={this.handleSubmit}>
+                    {replies}
+                    <input className="submitButton" key='submit' type="submit"/>
+                </form>)
         }
-    });
+    }
+    class OpenReply extends React.Component {
+        constructor(props) {
+            super(props);
 
-    let RadioRepy = React.createClass({
-        getInitialState: function(){
-            return{
-                pickedOptionId: this.props.replies[0].id.toString(),
-                pickedOptionContent: this.props.replies[0].content.toString()
-            }
-        },
+            this.state = {
+                answer: ''
+            };
 
-        componentWillMount: function(){
+            this.handleChange = this.handleChange.bind(this);
+            this.handleSubmit = this.handleSubmit.bind(this);
+        }
+
+        handleChange(event) {
             this.setState({
+                answer: event.target.value
+            });
+        }
+
+        handleSubmit(event) {
+            event.preventDefault();
+            //TODO: Logging for testing purposes only
+            //console.log(this.state.answer.toString());
+            //
+            const answer = {
+                questionId: this.props.questionId,
+                replyId: 7, // replyId that matches database id in replies table
+                replyContent:this.state.answer.toString()};
+            this.props.handleOpenAnswerSubmit(answer);
+        }
+
+        render() {
+            return (
+                <form className="flexForm" onSubmit={this.handleSubmit} onChange={event => this.handleChange(event)}>
+                    <input className="textInput" type="text"/>
+                    <input className="submitButton" type="submit"/>
+                </form>)
+        }
+    }
+    class RadioReply extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
                 pickedOptionId: this.props.replies[0].id.toString(),
                 pickedOptionContent: this.props.replies[0].content.toString()
-            })
-        },
+            };
 
-        handleChange: function(event, replyContent) {
+            this.handleSubmit = this.handleSubmit.bind(this);
+            this.handleChange = this.handleChange.bind(this);
+        }
+
+        handleChange(event, replyContent) {
             let checkedOption = event.target;
             if (checkedOption.checked) {
                 this.setState({
@@ -116,9 +170,9 @@
                     pickedOptionContent: replyContent
                 })
             }
-        },
+        }
 
-        handleSubmit: function(event) {
+        handleSubmit(event) {
             event.preventDefault();
             //TODO: Logging for testing purposes only
             //console.log(this.state.pickedOptionId.toString());
@@ -129,182 +183,142 @@
                 replyContent: this.state.pickedOptionContent.toString()
             };
             this.props.handleRadioAnswerSubmit(answer);
-        },
+        }
 
-        render: function() {
+        render() {
             const currentlyPickedOption = this.state.pickedOptionId;
-            const replies = this.props.replies.map(function (reply) {
+            const replies = this.props.replies.map((reply) => {
                 return ([
-                    React.createElement('input',
-                        {
-                            key: reply.id, type: 'radio', value: reply.id,
-                            checked: currentlyPickedOption === reply.id.toString(),
-                            onChange: function (event) {
-                                this.handleChange(event, reply.content)
-                            }
-                        }),
-                    React.createElement('label', null, reply.content),
-                    React.createElement('br', {key: 'breakline'})
+                    <div className="flexFormContainer">
+                        <input className="pickInput" key={reply.id} type="radio" value={reply.id}
+                               checked={currentlyPickedOption === reply.id.toString()}
+                               onChange={event => this.handleChange(event, reply.content)}/>
+                        <label className="inputLabel" key='content'>{reply.content}</label>
+                    </div>,
+                    <br key='breakline'/>
                 ])
             });
             return (
-                React.createElement('form', {key: 'form', onSubmit: this.handleSubmit},
-                    replies,
-                    React.createElement('input', {key: 'submit', type: 'submit'})
-                ))
+                <form className="flexForm" key='form' onSubmit={this.handleSubmit}>
+                    {replies}
+                    <input className="submitButton" key='submit' type="submit"/>
+                </form>)
         }
-    });
-
-    let OpenReply = React.createClass({
-        getInitialState: function() {
-            return {
-                answer: ''
-            };
-        },
-
-        handleChange:function(event) {
-            this.setState({
-                answer: event.target.value
-            });
-        },
-
-        handleSubmit:function(event) {
-            event.preventDefault();
-            //TODO: Logging for testing purposes only
-            //console.log(this.state.answer.toString());
-            //
-            const answer = {
-                questionId: this.props.questionId,
-                replyId: 7, // replyId that matches database id in replies table
-                replyContent: this.state.answer.toString()
-            };
-            this.props.handleOpenAnswerSubmit(answer);
-        },
-
-        render:function() {
-            return (
-                React.createElement('form', {
-                        key: 'form',
-                        onSubmit: this.handleSubmit,
-                        onChange: (function(event) {this.handleChange(event)})
-                    },
-                    React.createElement('input', {type: 'text'}),
-                    React.createElement('input', {type: 'submit'})
-                ))
-        }
-    });
-
-    let QuestionManager = React.createClass({
-        getRepliesComponent: function(inputType) {
+    }
+    class QuestionManager extends React.Component {
+        // noinspection JSMethodCanBeStatic
+        getRepliesComponent(inputType) {
             switch (inputType) {
                 case 1:
                     return (
-                        React.createElement(RadioReply, {
-                            key: this.props.question.id,
-                            replies: this.props.question.replies,
-                            questionId: this.props.question.id,
-                            handleRadioAnswerSubmit: this.props.handleRadioAnswerSubmit
-                        })
+                        <RadioReply key={this.props.question.id}
+                                    replies={this.props.question.replies}
+                                    questionId={this.props.question.id}
+                                    handleRadioAnswerSubmit={this.props.handleRadioAnswerSubmit}/>
                     );
                 case 2:
                     return (
-                        React.createElement(RadioReply, {
-                            key: this.props.question.id,
-                            replies: this.props.question.replies,
-                            questionId: this.props.question.id,
-                            handleRadioAnswerSubmit: this.props.handleRadioAnswerSubmit
-                        })
+                        <RadioReply key={this.props.question.id}
+                                    replies={this.props.question.replies}
+                                    questionId={this.props.question.id}
+                                    handleRadioAnswerSubmit={this.props.handleRadioAnswerSubmit}/>
                     );
                 case 3:
                     return (
-                        React.createElement(OpenReply, {
-                            key: this.props.question.id,
-                            questionId: this.props.question.id,
-                            handleOpenAnswerSubmit: this.props.handleOpenAnswerSubmit
-                        })
+                        <OpenReply key={this.props.question.id}
+                                   handleOpenAnswerSubmit={this.props.handleOpenAnswerSubmit}
+                                   questionId={this.props.question.id}/>
                     );
                 case 4:
                     return (
-                        React.createElement(CheckboxReply, {
-                            key: this.props.question.id,
-                            replies: this.props.question.replies,
-                            questionId: this.props.question.id,
-                            handleCheckboxAnswersSubmit: this.props.handleCheckboxAnswersSubmit
-                        })
+                        <CheckboxReply key={this.props.question.id}
+                                       replies={this.props.question.replies}
+                                       questionId={this.props.question.id}
+                                       handleCheckboxAnswersSubmit={this.props.handleCheckboxAnswersSubmit}/>
                     );
                 default:
                     return (
-                        React.createElement(MessageProvider, {
-                            key: 'msgProvider',
-                            message: "Nie udalo sie wczytac mozliwych odpowiedzi"
-                        })
+                        <MessageProvider key='msgProvider' message={MessageEnum.ReplyLoadingError}/>
                     );
             }
-        },
+        }
 
-        render: function() {
+        render() {
             const repliesComponent = this.getRepliesComponent(this.props.question.type);
             return (
-                React.createElement('div', null, this.props.question.content, repliesComponent)
+                <div className="mainContainer">
+                    <div className="questionContainer">
+                        <p className="questionContent">{this.props.question.content}</p>
+                    </div>
+                    {repliesComponent}
+                </div>
             )
         }
-    });
-
-    let SurveyManager = React.createClass({
-        getInitialState: function(){
-            let resp = null;
-            fetch("https://aspnet-core-surveyserver.herokuapp.com/api/questions")
-                .then(function (response) {
-                    response.json()
-                })
-                .then(function (response) {
-                    resp = response;
-                    });
-            return{
-                questions: resp,
-                currentQuestion: 0,
+    }
+    class SurveyManager extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
+                questions: null,
+                currentQuestion: null,
                 questionsLength: null,
                 answers: []
-            }
-        },
+            };
 
-        handleCheckboxAnswersSubmit: function(answers) {
-            answers.forEach(function(answer){
-                this.setState({
-                        answers: this.state.answers.concat([answer])
-                    }
-                );
-            });
+            fetch("")
+                .then(response => response.json())
+                .then(response => {
+                    this.setState({
+                        questions: response,
+                        currentQuestion: 0
+                    })
+                })
+                .catch(error => console.log(error));
 
-            this.incrementCurrentQuestion();
-        },
+            this.handleCheckboxAnswersSubmit = this.handleCheckboxAnswersSubmit.bind(this);
+            this.handleRadioAnswerSubmit = this.handleRadioAnswerSubmit.bind(this);
+            this.handleOpenAnswerSubmit = this.handleOpenAnswerSubmit.bind(this);
+            this.incrementCurrentQuestion = this.incrementCurrentQuestion.bind(this);
+            this.saveAnswers = this.saveAnswers.bind(this);
+        }
 
-        handleRadioAnswerSubmit: function(answer) {
-            this.setState({
-                    answers: this.state.answers.concat([answer])
-                }
+        handleCheckboxAnswersSubmit(answers) {
+            this.setState(
+                prevState => ({
+                    answers: [...prevState.answers, ...answers]
+                })
             );
             this.incrementCurrentQuestion();
-        },
+        }
 
-        handleOpenAnswerSubmit: function(answer) {
-            this.setState({
-                    answers: this.state.answers.concat([answer])
-                }
+        handleRadioAnswerSubmit(answer) {
+            this.setState(
+                prevState => ({
+                    answers: [...prevState.answers, answer]
+                })
             );
             this.incrementCurrentQuestion();
-        },
+        }
 
-        incrementCurrentQuestion: function() {
-            this.setState({
-                    currentQuestion: this.state.currentQuestion + 1
+        handleOpenAnswerSubmit(answer) {
+            this.setState(
+                prevState => ({
+                    answers: [...prevState.answers, answer]
+                })
+            );
+            this.incrementCurrentQuestion();
+        }
+
+        incrementCurrentQuestion() {
+            this.setState(
+                prevState => {
+                    return {currentQuestion: prevState.currentQuestion + 1}
                 }
             );
-        },
+        }
 
-        saveAnswers: function() {
-            console.log("Starting POST>:...");
-            fetch("https://aspnet-core-surveyserver.herokuapp.com/api/answers", {
+        saveAnswers() {
+            fetch("", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
@@ -312,89 +326,68 @@
                 },
                 body: JSON.stringify(this.state.answers)
             });
-            console.log("ENDING POST>:...");
 
             this.props.handleSurveySubmit();
-        },
+        }
 
-        render: function() {
+        render() {
             if (this.state.questions == null) {
-                return (
-                    React.createElement(MessageProvider, {
-                        key: 'msgProvider',
-                        message: "Wczytywanie"
-                    })
-                )
+                return <MessageProvider key='msgProvider' message={MessageEnum.Loading}/>
             }
 
             if (this.state.questions[this.state.currentQuestion] === undefined) {
                 if (this.state.currentQuestion !== 0) {
-                    return (
-                        React.createElement('button', {
-                            key: 'saveButton',
-                            onClick: this.saveAnswers
-                        }, "Odpowiedziano na wszystkie pytania. Potwierdz swoje odpowiedzi klikając tutaj")
-                    )
+                    return ([
+                        <MessageProvider key='msgProvider' message={MessageEnum.End}/>,
+                        <button key={'saveButton'} onClick={this.saveAnswers}> Zapisz odpowiedzi </button>
+                    ])
                 } else {
-                    return (
-                        React.createElement(MessageProvider, {
-                            key: 'msgProvider',
-                            message: "Blad ogolny, prosze zrestartowac aplikacje"
-                        })
-                    )
+                    return <MessageProvider key='msgProvider' message={MessageEnum.GeneralError}/>
                 }
             }
 
             return (
-                React.createElement(QuestionManager,
-                    {
-                        key: 'questionManager',
-                        question: this.state.questions[this.state.currentQuestion],
-                        handleCheckboxAnswersSubmit: this.handleCheckboxAnswersSubmit,
-                        handleRadioAnswerSubmit: this.handleRadioAnswerSubmit,
-                        handleOpenAnswerSubmit: this.handleOpenAnswerSubmit
-                    })
+                <QuestionManager key='questionManager' question={this.state.questions[this.state.currentQuestion]}
+                                 handleCheckboxAnswersSubmit={this.handleCheckboxAnswersSubmit}
+                                 handleRadioAnswerSubmit={this.handleRadioAnswerSubmit}
+                                 handleOpenAnswerSubmit={this.handleOpenAnswerSubmit}
+                />
             );
         }
-    });
-
-    let App = React.createClass({
-        getDefaultProps: function() {
-            return {
+    }
+    class App extends React.Component {
+        constructor(props) {
+            super(props);
+            this.state = {
                 surveySubmitted: false
             };
-        },
+            this.handleSurveySubmit = this.handleSurveySubmit.bind(this);
+        }
 
-        componentWillMount: function(){
-            this.setState({
-                surveySubmitted: false
-            });
-        },
-
-        handleSurveySubmit: function() {
+        handleSurveySubmit() {
             this.setState({
                 surveySubmitted: true
             });
-        },
+        }
 
-        render: function() {
+        render() {
             if (this.state.surveySubmitted) {
                 return (
-                    React.createElement('div', null, "Thank you for submitting answers for our survey!")
+                    <div>
+                        Thank you for submitting answers for our survey!
+                    </div>
                 )
             } else {
                 return (
-                    React.createElement('div', null,
-                        React.createElement(SurveyManager, {handleSurveySubmit: this.handleSurveySubmit}))
+                    <SurveyManager handleSurveySubmit={this.handleSurveySubmit}/>
                 );
             }
         }
-    });
-
+    }
     ReactDOM.render(
-        React.createElement(App, null), document.getElementById('root')
+        React.createElement(App),
+        document.getElementById('root')
     );
-
 </script>
 </body>
 </html>

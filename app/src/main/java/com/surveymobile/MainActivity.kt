@@ -9,11 +9,14 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import com.surveymobile.fragments.StatisticsFragment
+import com.surveymobile.fragments.StatisticsFragment.OnFragmentInteractionListener
+import com.surveymobile.fragments.SurveyFragment
 
 
-class MainActivity : AppCompatActivity(), StatisticsFragment.OnFragmentInteractionListener {
+class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
 
     var statisticsFragment: StatisticsFragment? = null
+    var surveyFragment: SurveyFragment? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,22 +25,15 @@ class MainActivity : AppCompatActivity(), StatisticsFragment.OnFragmentInteracti
         checkPermissions()
     }
 
-    private fun setStatsView() {
-        statisticsFragment = StatisticsFragment.newInstance()
-        supportFragmentManager
-                .beginTransaction()
-                .replace(R.id.statisticsFragment, statisticsFragment)
-                .addToBackStack(statisticsFragment.toString())
-                .commit()
-    }
-
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             //permission is not granted - request permisions
             setPermissions()
         } else {
             //permission granted already - show content
-            setStatsView()
+
+            //setStatsFragment()
+            setSurveyFragment()
         }
     }
 
@@ -53,6 +49,24 @@ class MainActivity : AppCompatActivity(), StatisticsFragment.OnFragmentInteracti
 
             finish()
         }
+    }
+
+    private fun setStatsFragment() {
+        statisticsFragment = StatisticsFragment.newInstance()
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.statisticsFragment, statisticsFragment)
+                .addToBackStack(statisticsFragment.toString())
+                .commit()
+    }
+
+    private fun setSurveyFragment(){
+        surveyFragment = SurveyFragment.newInstance()
+        supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.surveyFragment, surveyFragment)
+                .addToBackStack(surveyFragment.toString())
+                .commit()
     }
 
     override fun onFragmentInteraction(uri: Uri) {

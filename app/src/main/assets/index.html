@@ -325,7 +325,7 @@
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(this.state.answers)
-            });
+            }).catch();
 
             this.props.handleSurveySubmit();
         }
@@ -372,11 +372,7 @@
 
         render() {
             if (this.state.surveySubmitted) {
-                return (
-                    <div>
-                        Thank you for submitting answers for our survey!
-                    </div>
-                )
+                return <MessageProvider key='msgProvider' message={MessageEnum.End}/>
             } else {
                 return (
                     <SurveyManager handleSurveySubmit={this.handleSurveySubmit}/>

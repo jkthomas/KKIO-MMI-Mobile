@@ -1,5 +1,6 @@
 package com.surveymobile.fragments
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
@@ -22,6 +23,7 @@ class SurveyFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         viewOfFragment = inflater.inflate(R.layout.fragment_survey, container, false)

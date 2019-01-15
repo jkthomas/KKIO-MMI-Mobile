@@ -40,21 +40,22 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private fun initializeNavigationBar() {
         navigationView.setOnNavigationItemSelectedListener  {
             when(it.itemId){
-                R.id.survey -> {
-                    val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-                    ft.replace(R.id.container, SurveyFragment())
-                    ft.commit()
-                    true
-                }
                 R.id.statistics -> {
                     val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                     ft.replace(R.id.container, StatisticsFragment())
                     ft.commit()
                     true
                 }
+                R.id.survey -> {
+                    val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+                    ft.replace(R.id.container, SurveyFragment())
+                    ft.commit()
+                    true
+                }
                 else -> false
             }
         }
+        navigationView.selectedItemId = R.id.statistics
     }
 
     private fun setPermissions() {

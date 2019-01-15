@@ -32,7 +32,7 @@
 <script type="text/babel">
     'use strict';
     const MessageEnum = {
-        Loading: "Wczytywanie...",
+        Loading: "Pobieranie danych z serwera. Prosze czekac...",
         End: "Odpowiedziano na wszystkie pytania. Potwierdz swoje odpowiedzi klikając w przycisk poniżej...",
         ReplyLoadingError: "Nie udalo sie wczytac mozliwych odpowiedzi. Prosze odswiezyc strone.",
         GeneralError: "Blad ogolny, prosze zrestartowac aplikacje.",
@@ -372,7 +372,9 @@
 
         render() {
             if (this.state.surveySubmitted) {
-                return <MessageProvider key='msgProvider' message={MessageEnum.End}/>
+                return (
+                    <MessageProvider key='msgProvider' message={MessageEnum.SubmitThanks}/>
+                );
             } else {
                 return (
                     <SurveyManager handleSurveySubmit={this.handleSurveySubmit}/>

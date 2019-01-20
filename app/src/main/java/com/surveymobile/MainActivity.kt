@@ -31,15 +31,15 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             //permission is not granted - request permisions
             setPermissions()
-        } else {
-            //permission granted already - show content
-            initializeNavigationBar()
         }
+
+        //permission granted already - check connection
+        initializeNavigationBar()
     }
 
     private fun initializeNavigationBar() {
-        navigationView.setOnNavigationItemSelectedListener  {
-            when(it.itemId){
+        navigationView.setOnNavigationItemSelectedListener {
+            when (it.itemId) {
                 R.id.statistics -> {
                     val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                     ft.replace(R.id.container, StatisticsFragment())
@@ -61,15 +61,19 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private fun setPermissions() {
         ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET), 1)
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            val shutdownAlertBuilder = AlertDialog.Builder(this)
-            shutdownAlertBuilder.setTitle("Permissions not provided")
-            shutdownAlertBuilder.setMessage("Permission not granted. Shutting down...")
-            shutdownAlertBuilder.setPositiveButton("YES"){ _, _ -> }
-            val shutdownDialog: AlertDialog = shutdownAlertBuilder.create()
-            shutdownDialog.show()
+            shutdownApplication("Permissions not provided", "Permission not granted. Shutting down...")
+        }
+    }
 
+    private fun shutdownApplication(shutdownAlertTitle: String, shutdownAlertMessage: String) {
+        val shutdownAlertBuilder = AlertDialog.Builder(this)
+        shutdownAlertBuilder.setTitle(shutdownAlertTitle)
+        shutdownAlertBuilder.setMessage(shutdownAlertMessage)
+        shutdownAlertBuilder.setPositiveButton("Shutdown") { _, _ ->
             finish()
         }
+        val shutdownDialog: AlertDialog = shutdownAlertBuilder.create()
+        shutdownDialog.show()
     }
 
     override fun onFragmentInteraction(uri: Uri) {

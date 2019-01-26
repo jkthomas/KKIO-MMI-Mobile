@@ -7,46 +7,25 @@ import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-
+import kotlinx.android.synthetic.main.fragment_instructions.view.*
 
 import com.surveymobile.R
-import com.surveymobile.utilities.parsers.AnswerStatisticsParser
-import com.surveymobile.utilities.receivers.AnswerStatisticsReceiver
-import com.surveymobile.utilities.receivers.receiversInterface.AnswerStatisticsReceiverInterface
-import kotlinx.android.synthetic.main.fragment_statistics.view.*
 
-class StatisticsFragment : Fragment() {
+class InstructionsFragment : Fragment() {
     private var viewOfFragment: View? = null
-    private val answerStatisticsReceiver: AnswerStatisticsReceiverInterface = AnswerStatisticsReceiver()
     private var listener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStatistics()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
-        viewOfFragment = inflater.inflate(R.layout.fragment_statistics, container, false)
-        viewOfFragment?.showStatsButton?.setOnClickListener {
-            val statistics: String = AnswerStatisticsParser.parseAnswerStatistics(this.answerStatisticsReceiver.fillStatisticData())
-            if (statistics == "") {
-                viewOfFragment?.statisticsTextView?.text = getString(R.string.loading)
-            } else {
-                viewOfFragment?.statisticsTextView?.text = statistics
-            }
-        }
-
-        viewOfFragment?.hideStatsButton?.setOnClickListener {
-            viewOfFragment?.statisticsTextView?.text = ""
-        }
+        viewOfFragment = inflater.inflate(R.layout.fragment_instructions, container, false)
+        viewOfFragment?.instructionsTextView?.text = getString(R.string.instructionsContent)
 
         return viewOfFragment
-    }
-
-    private fun setStatistics() {
-        this.answerStatisticsReceiver.getStatisticData()
     }
 
     fun onButtonPressed(uri: Uri) {
@@ -74,6 +53,6 @@ class StatisticsFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() = StatisticsFragment().apply {}
+        fun newInstance() = InstructionsFragment().apply { }
     }
 }

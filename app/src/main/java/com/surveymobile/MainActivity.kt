@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.ActionBar
 import android.support.v7.app.AlertDialog
+import com.surveymobile.fragments.InstructionsFragment
 import com.surveymobile.fragments.StatisticsFragment
 import com.surveymobile.fragments.StatisticsFragment.OnFragmentInteractionListener
 import com.surveymobile.fragments.SurveyFragment
@@ -21,6 +22,9 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     lateinit var navigationBar: ActionBar
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //TODO: Implement runtime theme switch
+        setTheme(R.style.DarkTheme)
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
@@ -34,12 +38,22 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
 
         //permission granted already - check connection
-        initializeNavigationBar()
+        if (isOnline()) {
+            initializeNavigationBar()
+        } else {
+            shutdownApplication("No connection with server", "Connection with serwer couldn't be established. Application will shut down.")
+        }
     }
 
     private fun initializeNavigationBar() {
         navigationView.setOnNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.instructions -> {
+                    val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
+                    ft.replace(R.id.container, InstructionsFragment())
+                    ft.commit()
+                    true
+                }
                 R.id.statistics -> {
                     val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
                     ft.replace(R.id.container, StatisticsFragment())
@@ -55,7 +69,7 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
                 else -> false
             }
         }
-        navigationView.selectedItemId = R.id.statistics
+        navigationView.selectedItemId = R.id.instructions
     }
 
     private fun setPermissions() {
@@ -74,6 +88,21 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
         }
         val shutdownDialog: AlertDialog = shutdownAlertBuilder.create()
         shutdownDialog.show()
+    }
+
+    private fun isOnline(): Boolean {
+        val runtime = Runtime.getRuntime()
+        try {
+            val ipProcess = runtime.exec("/system/bin/ping -c 1 8.8.8.8")
+            val exitValue = ipProcess.waitFor()
+            return exitValue == 0
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } catch (e: InterruptedException) {
+            e.printStackTrace()
+        }
+
+        return false
     }
 
     override fun onFragmentInteraction(uri: Uri) {

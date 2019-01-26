@@ -10,4 +10,14 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="instructionsContent">Aby sprawidzic statystyki odpowiedzi znajdujace sie juz w bazie danych,
+        nalezy skorzystac z opcji \'Statistics\'. W tym miejscu wyswietlaja sie wszystkie aktywne odpowiedzi
+        oraz ile razy zostaly juz one wybierane. W sklad statystyk nie wchodza (z oczywistych powodow) odpowiedzi otwarte.
+        Do ukrywania i pokazywania statystyk sluza dwa opisane przyciski.\n\n
+
+        Aby skorzystac z opcji wypelniania ankiety, nalezy uzyc opcji \'Survey\'. Znajduje sie tam wewnetrzna aplikacja
+        umozliwiajaca przeslanie odpowiedzi na zadawane pytania. Jezeli ankieta zostanie przerwana poprzez zatrzymanie
+        aplikacji lub np. przelaczenie na inna zakladke aplikacji, trzeba rozpoczac jej wypelnianie od poczatku.
+        Wynik ankiety zapisywany jest na samym koncu i musi zostac potwierdzony przez uzytkownika.
+    </string>
 </resources>

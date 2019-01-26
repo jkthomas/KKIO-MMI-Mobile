@@ -37,6 +37,7 @@ class SurveyFragment : Fragment() {
         listener?.onFragmentInteraction(uri)
     }
 
+    //TODO: Why only first attached fragment can have this method overrode
 //    override fun onAttach(context: Context) {
 //        super.onAttach(context)
 //        if (context is OnFragmentInteractionListener) {

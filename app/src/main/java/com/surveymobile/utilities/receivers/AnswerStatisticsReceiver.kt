@@ -16,7 +16,7 @@ class AnswerStatisticsReceiver : AnswerStatisticsReceiverInterface {
     override fun getStatisticData(){
         Thread {
             try {
-                val jsonResponse: Response = get("")
+                val jsonResponse: Response = get("https://aspnet-core-surveyserver.herokuapp.com/api/answers")
                 val statisticsData: JSONArray = jsonResponse.jsonArray
 
                 for (i in 0 until statisticsData.length()) {

@@ -18,26 +18,26 @@ body{
 
 .mainContainer{
     display: block;
-    width:75%;
+    width:50%;
     margin:auto;
-
 }
 
 .questionContainer{
-    background-color: #8585ad;
-    padding: 5%;
+    background-color: #595959;
+    padding: 50px;
 }
 
 .questionContent{
     text-align: center;
+    color: #f2f2f2;
     font-weight: bold;
-    font-size: 2.75vw;
+    font-size: 200%;
 }
 
 .flexForm{
     width:50%;
-    margin:10% auto;
-    padding:5%;
+    margin:50px auto;
+    padding:50px;
     border:1px solid #bfbfbf;
     display: flex;
     flex-direction: column;
@@ -48,8 +48,7 @@ body{
 
 .flexFormContainer{
     width: 100%;
-    margin: 5% 0;
-    padding-bottom: 5%;
+    margin: 10px 0;
 }
 .flexForm label {
     margin-bottom:10px;
@@ -65,30 +64,43 @@ body{
 
 
 .inputLabel{
-    font-size: 2vw;
+    font-size: 1.5em;
 }
 
 .textInput{
-    height: 30px;
+    height: 50px;
     width: 90%;
-    margin-bottom:10%;
+    margin-bottom:30px;
     border: 1px solid #bfbfbf;
 }
 
 .submitButton{
     /*width: 30%;*/
+    padding: 20px;
+    background:#595959;
+    color: #f2f2f2;
+    font-weight: bold;
+    font-size: 18px;
+    border: 0;
     margin: 0;
-    padding: 5%;
-    background:#8585AD;
-    color:#fff;
-    font-weight:bold;
-    font-size: 1.25vw;
-    border:0;
+}
+
+.finalSubmitButton{
+    width: 30%;
+    margin-left: 35%;
+    margin-right: 35%;
+    padding: 20px;
+    background:#595959;
+    color: #f2f2f2;
+    font-weight: bold;
+    font-size: 18px;
+    border: 0;
 }
 
 .message{
-    font-size: 3vw;
-    text-shadow: 2px 2px pink;
+    font-size: 200%;
+    text-align: center;
+    text-shadow: 2px 2px #bfbfbf;
 }
 
 @keyframes swell{

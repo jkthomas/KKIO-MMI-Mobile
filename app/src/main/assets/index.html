@@ -8,6 +8,7 @@
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/web-app-manifest/
     -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
     <link href="stylesheet.css" rel="stylesheet" type="text/css">
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
@@ -32,11 +33,11 @@
 <script type="text/babel">
     'use strict';
     const MessageEnum = {
-        Loading: "Pobieranie danych z serwera. Prosze czekac...",
-        End: "Odpowiedziano na wszystkie pytania. Potwierdz swoje odpowiedzi klikając w przycisk poniżej...",
-        ReplyLoadingError: "Nie udalo sie wczytac mozliwych odpowiedzi. Prosze odswiezyc strone.",
-        GeneralError: "Blad ogolny, prosze zrestartowac aplikacje.",
-        SubmitThanks: "Dziekujemy za wypelnienie naszej ankiety!"
+        Loading: "Loading...",
+        End: "Survey has been completed. Please click button below to send your answers.",
+        ReplyLoadingError: "Loading error occurred. Please reload page in 30 seconds.",
+        GeneralError: "General error occurred. Please restart an application.",
+        SubmitThanks: "Thank you for completing our survey!"
     };
 
     const MessageProvider = (props) => {
@@ -108,7 +109,7 @@
             return (
                 <form className="flexForm" key='form' onSubmit={this.handleSubmit}>
                     {replies}
-                    <input className="submitButton" key='submit' type="submit"/>
+                    <input className="submitButton" key='submit' type="submit" value="Next question" />
                 </form>)
         }
     }
@@ -146,7 +147,7 @@
             return (
                 <form className="flexForm" onSubmit={this.handleSubmit} onChange={event => this.handleChange(event)}>
                     <input className="textInput" type="text"/>
-                    <input className="submitButton" type="submit"/>
+                    <input className="submitButton" type="submit" value="Next question" />
                 </form>)
         }
     }
@@ -201,7 +202,7 @@
             return (
                 <form className="flexForm" key='form' onSubmit={this.handleSubmit}>
                     {replies}
-                    <input className="submitButton" key='submit' type="submit"/>
+                    <input className="submitButton" key='submit' type="submit" value="Next question" />
                 </form>)
         }
     }
@@ -265,7 +266,7 @@
                 answers: []
             };
 
-            fetch("")
+            fetch("https://aspnet-core-surveyserver.herokuapp.com/api/questions")
                 .then(response => response.json())
                 .then(response => {
                     this.setState({
@@ -318,14 +319,14 @@
         }
 
         saveAnswers() {
-            fetch("", {
+            fetch("https://aspnet-core-surveyserver.herokuapp.com/api/answers", {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify(this.state.answers)
-            }).catch();
+            });
 
             this.props.handleSurveySubmit();
         }
@@ -339,7 +340,7 @@
                 if (this.state.currentQuestion !== 0) {
                     return ([
                         <MessageProvider key='msgProvider' message={MessageEnum.End}/>,
-                        <button key={'saveButton'} onClick={this.saveAnswers}> Zapisz odpowiedzi </button>
+                        <button className="finalSubmitButton" key={'saveButton'} onClick={this.saveAnswers}> Send survey results </button>
                     ])
                 } else {
                     return <MessageProvider key='msgProvider' message={MessageEnum.GeneralError}/>
@@ -373,8 +374,10 @@
         render() {
             if (this.state.surveySubmitted) {
                 return (
-                    <MessageProvider key='msgProvider' message={MessageEnum.SubmitThanks}/>
-                );
+                    <div>
+                        Thank you for submitting answers for our survey!
+                    </div>
+                )
             } else {
                 return (
                     <SurveyManager handleSurveySubmit={this.handleSurveySubmit}/>

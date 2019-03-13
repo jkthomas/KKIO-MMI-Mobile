@@ -1,23 +1,20 @@
 <resources>
-    <string name="app_name">Surveymobile</string>
-    <string name="textview1_permission_granted">Udzielono pozwolenia</string>
-    <string name="textview1_permission_denied">Pozwolenie odrzucone</string>
-    <string name="testString">testString</string>
-    <string name="show_statistics">Pokaz statystyki</string>
-    <string name="update_statistics">Aktualizuj statystyki</string>
-    <string name="loading">Wczytywanie…ponow probe za kilka sekund</string>
-    <string name="hide_statistics">Ukryj statystyki</string>
+    <string name="app_name">KKIO-MMI-Mobile</string>
+    <string name="textview1_permission_granted">Permission granted</string>
+    <string name="textview1_permission_denied">Permission not granted</string>
+    <string name="show_statistics">Show statistics</string>
+    <string name="update_statistics">Refresh statistics</string>
+    <string name="loading">Loading…please refresh in a few seconds</string>
+    <string name="hide_statistics">Hide statistics</string>
+    <string name="instructionsContent">
+        To check survey answers statistics that are already placed in database, use \'Statistics\' option from navigation
+        bar. It provides all active answers with occurrence counter for each of them. Application does not provide
+        information about any answers with \'open\' type. To show and hide statistics, you can use two dedicated buttons.
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="instructionsContent">Aby sprawidzic statystyki odpowiedzi znajdujace sie juz w bazie danych,
-        nalezy skorzystac z opcji \'Statistics\'. W tym miejscu wyswietlaja sie wszystkie aktywne odpowiedzi
-        oraz ile razy zostaly juz one wybierane. W sklad statystyk nie wchodza (z oczywistych powodow) odpowiedzi otwarte.
-        Do ukrywania i pokazywania statystyk sluza dwa opisane przyciski.\n\n
-
-        Aby skorzystac z opcji wypelniania ankiety, nalezy uzyc opcji \'Survey\'. Znajduje sie tam wewnetrzna aplikacja
-        umozliwiajaca przeslanie odpowiedzi na zadawane pytania. Jezeli ankieta zostanie przerwana poprzez zatrzymanie
-        aplikacji lub np. przelaczenie na inna zakladke aplikacji, trzeba rozpoczac jej wypelnianie od poczatku.
-        Wynik ankiety zapisywany jest na samym koncu i musi zostac potwierdzony przez uzytkownika.
+        To fill out a survey, use \'Survey\' option from navigation bar. After loading, it immediately initializes first
+        survey question. Each question must be answered by choosing available options or by filling \'open\' question
+        field. Survey answers are sent after pressing a button under information about survey end. It appears only after
+        filling all required answers. If you shutdown your application before pressing that button, your answers won\'t
+        be sent to database.
     </string>
 </resources>

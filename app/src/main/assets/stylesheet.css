@@ -18,26 +18,27 @@ body{
 
 .mainContainer{
     display: block;
-    width:50%;
+    width:75%;
     margin:auto;
+
 }
 
 .questionContainer{
-    background-color: #595959;
-    padding: 50px;
+    background-color: #595959;;
+    padding: 5%;
 }
 
 .questionContent{
     text-align: center;
     color: #f2f2f2;
     font-weight: bold;
-    font-size: 200%;
+    font-size: 2.75vw;
 }
 
 .flexForm{
     width:50%;
-    margin:50px auto;
-    padding:50px;
+    margin:10% auto;
+    padding:5%;
     border:1px solid #bfbfbf;
     display: flex;
     flex-direction: column;
@@ -48,7 +49,8 @@ body{
 
 .flexFormContainer{
     width: 100%;
-    margin: 10px 0;
+    margin: 5% 0;
+    padding-bottom: 5%;
 }
 .flexForm label {
     margin-bottom:10px;
@@ -64,41 +66,41 @@ body{
 
 
 .inputLabel{
-    font-size: 1.5em;
+    font-size: 2vw;
 }
 
 .textInput{
-    height: 50px;
+    height: 30px;
     width: 90%;
-    margin-bottom:30px;
+    margin-bottom:10%;
     border: 1px solid #bfbfbf;
 }
 
 .submitButton{
     /*width: 30%;*/
-    padding: 20px;
-    background:#595959;
-    color: #f2f2f2;
-    font-weight: bold;
-    font-size: 18px;
-    border: 0;
     margin: 0;
+    padding: 5%;
+    background:#595959;
+    color:#f2f2f2;
+    font-weight:bold;
+    font-size: 1.25vw;
+    border:0;
 }
 
-.finalSubmitButton{
+.submitButton{
     width: 30%;
     margin-left: 35%;
     margin-right: 35%;
-    padding: 20px;
+    padding: 5%;
     background:#595959;
-    color: #f2f2f2;
-    font-weight: bold;
-    font-size: 18px;
-    border: 0;
+    color:#f2f2f2;
+    font-weight:bold;
+    font-size: 1.25vw;
+    border:0;
 }
 
 .message{
-    font-size: 200%;
+    font-size: 3vw;
     text-align: center;
     text-shadow: 2px 2px #bfbfbf;
 }

@@ -23,7 +23,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:itemBackground="@color/colorDarkThemePrimary"
-            app:itemTextColor="@color/colorDarkThemePrimaryDark"
+            app:itemTextColor="@color/colorWhite"
             app:menu="@menu/navigation"/>
             <!--//TODO: Implement runtime switch
             app:itemBackground="@color/colorPrimary"

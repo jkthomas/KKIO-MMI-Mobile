@@ -58,14 +58,9 @@ class StatisticsFragment : Fragment() {
     }
 
     private fun exportStatistics() {
-        //TODO: Implement statistics saving - get internal storage directory
-        //val filepath : String = context?.filesDir?.path + "/export_data.txt"
         val filepath = Environment.getExternalStorageDirectory().path + "/export_data.txt"
         File(filepath).printWriter().use { out ->
             out.println(viewOfFragment?.statisticsTextView?.text)
-//            history.forEach {
-//                out.println("${it.key}, ${it.value}")
-//            }
         }
     }
 

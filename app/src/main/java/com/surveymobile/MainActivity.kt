@@ -5,7 +5,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.design.widget.BottomNavigationView
 import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.content.ContextCompat
@@ -34,14 +33,34 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
     private fun checkPermissions() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
             //permission is not granted - request permisions
-            setPermissions()
+            setInternetPermissions()
         }
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            //permission is not granted - request permisions
+            setStoragePermissions()
+        }
+
 
         //permission granted already - check connection
         if (isOnline()) {
             initializeNavigationBar()
         } else {
             shutdownApplication("No connection with server", "Connection with serwer couldn't be established. Application will shut down.")
+        }
+    }
+
+    private fun setInternetPermissions() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET), 1)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
+            shutdownApplication("Permissions not provided", "Permission not granted. Shutting down...")
+        }
+    }
+
+    private fun setStoragePermissions() {
+        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            shutdownApplication("Permissions not provided", "Permission not granted. Shutting down...")
         }
     }
 
@@ -70,13 +89,6 @@ class MainActivity : AppCompatActivity(), OnFragmentInteractionListener {
             }
         }
         navigationView.selectedItemId = R.id.instructions
-    }
-
-    private fun setPermissions() {
-        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET), 1)
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED) {
-            shutdownApplication("Permissions not provided", "Permission not granted. Shutting down...")
-        }
     }
 
     private fun shutdownApplication(shutdownAlertTitle: String, shutdownAlertMessage: String) {

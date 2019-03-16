@@ -3,6 +3,7 @@ package com.surveymobile.fragments
 import android.content.Context
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -14,6 +15,8 @@ import com.surveymobile.utilities.parsers.AnswerStatisticsParser
 import com.surveymobile.utilities.receivers.AnswerStatisticsReceiver
 import com.surveymobile.utilities.receivers.receiversInterface.AnswerStatisticsReceiverInterface
 import kotlinx.android.synthetic.main.fragment_statistics.view.*
+import java.io.File
+import java.io.FileOutputStream
 
 class StatisticsFragment : Fragment() {
     private var viewOfFragment: View? = null
@@ -29,6 +32,11 @@ class StatisticsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         viewOfFragment = inflater.inflate(R.layout.fragment_statistics, container, false)
+
+        viewOfFragment?.hideStatsButton?.setOnClickListener {
+            viewOfFragment?.statisticsTextView?.text = ""
+        }
+
         viewOfFragment?.showStatsButton?.setOnClickListener {
             val statistics: String = AnswerStatisticsParser.parseAnswerStatistics(this.answerStatisticsReceiver.fillStatisticData())
             if (statistics == "") {
@@ -38,8 +46,8 @@ class StatisticsFragment : Fragment() {
             }
         }
 
-        viewOfFragment?.hideStatsButton?.setOnClickListener {
-            viewOfFragment?.statisticsTextView?.text = ""
+        viewOfFragment?.exportStatsButton?.setOnClickListener {
+            exportStatistics()
         }
 
         return viewOfFragment
@@ -47,6 +55,18 @@ class StatisticsFragment : Fragment() {
 
     private fun setStatistics() {
         this.answerStatisticsReceiver.getStatisticData()
+    }
+
+    private fun exportStatistics() {
+        //TODO: Implement statistics saving - get internal storage directory
+        //val filepath : String = context?.filesDir?.path + "/export_data.txt"
+        val filepath = Environment.getExternalStorageDirectory().path + "/export_data.txt"
+        File(filepath).printWriter().use { out ->
+            out.println(viewOfFragment?.statisticsTextView?.text)
+//            history.forEach {
+//                out.println("${it.key}, ${it.value}")
+//            }
+        }
     }
 
     fun onButtonPressed(uri: Uri) {

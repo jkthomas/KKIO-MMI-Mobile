@@ -6,11 +6,13 @@
     <string name="update_statistics">Refresh statistics</string>
     <string name="loading">Loading…please refresh in a few seconds</string>
     <string name="hide_statistics">Hide statistics</string>
+    <string name="export_statistics">Export statistics</string>
     <string name="instructionsContent">
         To check survey answers statistics that are already placed in database, use \'Statistics\' option from navigation
         bar. It provides all active answers with occurrence counter for each of them. Application does not provide
         information about any answers with \'open\' type. To show and hide statistics, you can use two dedicated buttons.
-
+        \n
+        \n
         To fill out a survey, use \'Survey\' option from navigation bar. After loading, it immediately initializes first
         survey question. Each question must be answered by choosing available options or by filling \'open\' question
         field. Survey answers are sent after pressing a button under information about survey end. It appears only after

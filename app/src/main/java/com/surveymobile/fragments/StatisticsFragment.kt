@@ -17,6 +17,9 @@ import com.surveymobile.utilities.receivers.receiversInterface.AnswerStatisticsR
 import kotlinx.android.synthetic.main.fragment_statistics.view.*
 import java.io.File
 import java.io.FileOutputStream
+import android.text.method.ScrollingMovementMethod
+
+
 
 class StatisticsFragment : Fragment() {
     private var viewOfFragment: View? = null
@@ -32,6 +35,8 @@ class StatisticsFragment : Fragment() {
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
         viewOfFragment = inflater.inflate(R.layout.fragment_statistics, container, false)
+
+        viewOfFragment?.statisticsTextView?.movementMethod = ScrollingMovementMethod()
 
         viewOfFragment?.hideStatsButton?.setOnClickListener {
             viewOfFragment?.statisticsTextView?.text = ""
